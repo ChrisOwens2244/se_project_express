@@ -95,8 +95,6 @@ const likeItem = (req, res) => {
     });
 };
 
-//...
-
 const dislikeItem = (req, res) => {
   Item.findByIdAndUpdate(
     req.params.id,
