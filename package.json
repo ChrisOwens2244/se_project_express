@@ -5,8 +5,8 @@
   "main": "app.js",
   "scripts": {
     "lint": "npx eslint .",
-    "start": "nodemon index.js",
-    "dev": "npm start -rs"
+    "start": "node app.js",
+    "dev": "nodemon app.js"
   },
   "author": "Christopher Owens",
   "license": "ISC",
