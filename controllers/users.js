@@ -12,13 +12,9 @@ const getUsers = (req, res) => {
     })
     .catch((err) => {
       console.error(err);
-      if (err.name === "ValidationError") {
-        res.status(BAD_REQUEST_ERR).send({ message: err.message });
-      } else {
-        res
-          .status(INTERNAL_SERVER_ERR)
-          .send({ message: "An error occured on the server." });
-      }
+      res
+        .status(INTERNAL_SERVER_ERR)
+        .send({ message: "An error occured on the server." });
     });
 };
 
