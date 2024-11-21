@@ -1,6 +1,8 @@
 const Item = require("../models/clothingItem");
 const {
   BAD_REQUEST_ERR,
+  AUTH_ERR,
+  FORBIDDEN_ERR,
   NOT_FOUND_ERR,
   INTERNAL_SERVER_ERR,
 } = require("../utils/errors");
@@ -43,6 +45,12 @@ const deleteItem = (req, res) => {
   Item.findByIdAndRemove(req.params.id)
     .orFail()
     .then((item) => {
+      if (item.owner != req.user._id) {
+        const error = new Error("Forbbien");
+        error.name = "ForbiddenError";
+        error.statusCode = FORBIDDEN_ERR;
+        throw error;
+      }
       res.send({ data: item });
     })
     .catch((err) => {
@@ -54,6 +62,10 @@ const deleteItem = (req, res) => {
         res.status(BAD_REQUEST_ERR).send({ message: "That ID is invalid." });
       } else if (err.name === "DocumentNotFoundError") {
         res.status(NOT_FOUND_ERR).send({ message: "That item does not exist" });
+      } else if (err.name === "ForbiddenError") {
+        res
+          .status(FORBIDDEN_ERR)
+          .send({ message: "You are not the owner of this item" });
       } else {
         res
           .status(INTERNAL_SERVER_ERR)
