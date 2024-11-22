@@ -1,7 +1,6 @@
 const Item = require("../models/clothingItem");
 const {
   BAD_REQUEST_ERR,
-  AUTH_ERR,
   FORBIDDEN_ERR,
   NOT_FOUND_ERR,
   INTERNAL_SERVER_ERR,
@@ -12,8 +11,7 @@ const getItems = (req, res) => {
     .then((items) => {
       res.send({ data: items });
     })
-    .catch((err) => {
-      console.error(err);
+    .catch(() => {
       res
         .status(INTERNAL_SERVER_ERR)
         .send({ message: "An error occured on the server." });
@@ -30,7 +28,6 @@ const createItem = (req, res) => {
       res.send({ data: item });
     })
     .catch((err) => {
-      console.error(err);
       if (err.name === "ValidationError") {
         res.status(BAD_REQUEST_ERR).send({ message: err.message });
       } else {
@@ -42,23 +39,20 @@ const createItem = (req, res) => {
 };
 
 const deleteItem = (req, res) => {
-  Item.findByIdAndRemove(req.params.id)
+  Item.findById(req.params.id)
     .orFail()
     .then((item) => {
-      if (item.owner != req.user._id) {
-        const error = new Error("Forbbien");
-        error.name = "ForbiddenError";
-        error.statusCode = FORBIDDEN_ERR;
-        throw error;
+      if (String(item.owner) !== req.user._id) {
+        return res
+          .status(FORBIDDEN_ERR)
+          .send({ message: "You do not own this item." });
       }
-      res.send({ data: item });
+      return item
+        .deleteOne()
+        .then(() => res.status(200).send({ message: "Item deleted" }));
     })
     .catch((err) => {
-      console.error(err);
-      console.log(err.name);
-      if (err.name === "ValidationError") {
-        res.status(BAD_REQUEST_ERR).send({ message: err.message });
-      } else if (err.name === "CastError") {
+      if (err.name === "CastError") {
         res.status(BAD_REQUEST_ERR).send({ message: "That ID is invalid." });
       } else if (err.name === "DocumentNotFoundError") {
         res.status(NOT_FOUND_ERR).send({ message: "That item does not exist" });
@@ -85,11 +79,7 @@ const likeItem = (req, res) => {
       res.send({ data: item });
     })
     .catch((err) => {
-      console.error(err);
-      console.log(err.name);
-      if (err.name === "ValidationError") {
-        res.status(BAD_REQUEST_ERR).send({ message: err.message });
-      } else if (err.name === "CastError") {
+      if (err.name === "CastError") {
         res.status(BAD_REQUEST_ERR).send({ message: "That ID is invalid." });
       } else if (err.name === "DocumentNotFoundError") {
         res
@@ -114,11 +104,7 @@ const dislikeItem = (req, res) => {
       res.send({ data: item });
     })
     .catch((err) => {
-      console.error(err);
-      console.log(err.name);
-      if (err.name === "ValidationError") {
-        res.status(BAD_REQUEST_ERR).send({ message: err.message });
-      } else if (err.name === "CastError") {
+      if (err.name === "CastError") {
         res.status(BAD_REQUEST_ERR).send({ message: "That ID is invalid." });
       } else if (err.name === "DocumentNotFoundError") {
         res.status(NOT_FOUND_ERR).send({ message: "That item does not exist" });
