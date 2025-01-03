@@ -25,7 +25,7 @@ const createItem = (req, res) => {
 
   Item.create({ name, weather, imageUrl, owner })
     .then((item) => {
-      res.send({ data: item });
+      res.send({ item });
     })
     .catch((err) => {
       if (err.name === "ValidationError") {
@@ -76,7 +76,7 @@ const likeItem = (req, res) => {
   )
     .orFail()
     .then((item) => {
-      res.send({ data: item });
+      res.send({ item });
     })
     .catch((err) => {
       if (err.name === "CastError") {
@@ -101,7 +101,7 @@ const dislikeItem = (req, res) => {
   )
     .orFail()
     .then((item) => {
-      res.send({ data: item });
+      res.send({ item });
     })
     .catch((err) => {
       if (err.name === "CastError") {
