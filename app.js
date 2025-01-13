@@ -6,6 +6,12 @@ const cors = require("cors");
 
 const routes = require("./routes/index");
 
+const { errors } = require("celebrate");
+
+const { requestLogger, errorLogger } = require("./middlewareg/logger");
+
+const errorHandler = require("./middleware/error-handler");
+
 const { PORT = 3001 } = process.env;
 
 const app = express();
@@ -23,7 +29,15 @@ app.use(cors());
 
 app.use(express.json());
 
+app.use(requestLogger);
+
 app.use("/", routes);
+
+app.use(errorLogger);
+
+app.use(errors());
+
+app.use(errorHandler);
 
 app.listen(PORT, () => {
   // if everything works fine, the console will show which port the application is listening to
