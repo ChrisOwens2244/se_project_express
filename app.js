@@ -8,7 +8,7 @@ const routes = require("./routes/index");
 
 const { errors } = require("celebrate");
 
-const { requestLogger, errorLogger } = require("./middlewareg/logger");
+const { requestLogger, errorLogger } = require("./middleware/logger");
 
 const errorHandler = require("./middleware/error-handler");
 
