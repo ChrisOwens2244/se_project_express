@@ -10,6 +10,8 @@ The back-end project is focused on creating a server for the WTWR application. F
 - controllers
 - mongoose schemas and models
 - authorization middleware
+- winstorn
+- Joi
 
 ## Running the Project
 
