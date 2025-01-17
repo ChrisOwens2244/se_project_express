@@ -7,7 +7,7 @@ const ConflictError = require("../errors/conflict-err");
 const UnauthorizedError = require("../errors/unauth-err");
 const { JWT_SECRET } = require("../utils/config");
 
-const createUser = (req, res) => {
+const createUser = (req, res, next) => {
   bcrypt
     .hash(req.body.password, 10)
     .then((hash) => {
@@ -39,7 +39,7 @@ const createUser = (req, res) => {
     });
 };
 
-const login = (req, res) => {
+const login = (req, res, next) => {
   const { email, password } = req.body;
 
   if (!email || !password) {
@@ -63,7 +63,7 @@ const login = (req, res) => {
     });
 };
 
-const getCurrentUser = async (req, res) => {
+const getCurrentUser = async (req, res, next) => {
   try {
     const user = await User.findById(req.user._id).orFail();
     res.send({
@@ -75,13 +75,12 @@ const getCurrentUser = async (req, res) => {
     } else if (err.name === "DocumentNotFoundError") {
       next(new NotFoundError("This user does not exist."));
     } else {
-      res;
       next(err);
     }
   }
 };
 
-const updateProfile = (req, res) => {
+const updateProfile = (req, res, next) => {
   const { name, avatar } = req.body;
   User.findByIdAndUpdate(
     req.user._id,

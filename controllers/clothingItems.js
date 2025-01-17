@@ -4,7 +4,7 @@ const BadRequestError = require("../errors/bad-request-err");
 const ForbiddenError = require("../errors/forbidden-err");
 const NotFoundError = require("../errors/not-found-err");
 
-const getItems = (req, res) => {
+const getItems = (req, res, next) => {
   Item.find({})
     .then((items) => {
       res.send({ data: items });
@@ -14,7 +14,7 @@ const getItems = (req, res) => {
     });
 };
 
-const createItem = (req, res) => {
+const createItem = (req, res, next) => {
   console.log(req.user._id); // _id will become accessible
   const { name, weather, imageUrl } = req.body;
   const owner = req.user._id;
@@ -32,7 +32,7 @@ const createItem = (req, res) => {
     });
 };
 
-const deleteItem = (req, res) => {
+const deleteItem = (req, res, next) => {
   Item.findById(req.params.id)
     .orFail()
     .then((item) => {
@@ -56,7 +56,7 @@ const deleteItem = (req, res) => {
     });
 };
 
-const likeItem = (req, res) => {
+const likeItem = (req, res, next) => {
   Item.findByIdAndUpdate(
     req.params.id,
     { $addToSet: { likes: req.user._id } }, // add _id to the array if it's not there yet
@@ -77,7 +77,7 @@ const likeItem = (req, res) => {
     });
 };
 
-const dislikeItem = (req, res) => {
+const dislikeItem = (req, res, next) => {
   Item.findByIdAndUpdate(
     req.params.id,
     { $pull: { likes: req.user._id } }, // remove _id from the array
