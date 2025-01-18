@@ -19,4 +19,4 @@ The back-end project is focused on creating a server for the WTWR application. F
 
 `npm run dev` — to launch the server with the hot reload feature
 
-Domain -https://wtwr2244.twilightparadox.com/
+Domain -https://wtwr2244.twilightparadox.com/ (I will need to set up the server for this so contact me before starting)
